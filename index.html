@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>xbl的博客</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="blogButton.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        li {
-            list-style: none;
-        }
-
         body {
             background-image: url(blogsBgk.jpg);
             background-repeat: no-repeat;
@@ -22,32 +19,10 @@
             font: 14px/1.5 "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
             color: #333;
         }
-
-        a {
-            display: block;
-
-            width: 180px;
-            height: 50px;
-            margin: 10px auto;
-            border-radius: 15px;
-            background-color: #00080c;
-
-            text-align: center;
-            line-height: 50px;
-            font-size: 20px;
-            text-decoration: none;
-            color: #fff;
-        }
-        
-        a:hover{
-            background-color: #5b0101;
-        }
-
         h1 {
             font-size: 50px;
             text-align: center;
         }
-
         h2 {
             font-size: 30px;
             text-align: center;
@@ -56,19 +31,44 @@
 </head>
 <body>
 <h1>欢迎来访xbl的博客！</h1>
-<h2>部件效果展示：</h2>
-<ul>
-    <li><a href="./原神人物热词/原神人物热词.html" target="_blank">原神人物热词</a></li>
-    <li><a href="./原神banner/原神banner.html" target="_blank">原神banner</a></li>
-    <li><a href="./抖音产品卡片/抖音产品卡片.html" target="_blank">抖音产品卡片</a></li>
-    <li><a href="./抖音解决方案/抖音解决方案.html" target="_blank">抖音解决方案</a></li>
-    <li><a href="./新闻列表/新闻列表.html" target="_blank">新闻列表</a></li>
-</ul>
+<div class="button-container">
+    <a href="#" class="btn" title="作者牛逼">
+        <span class="btm">作者太厉害了！</span>
+    </a>
+</div>
+<br>
+<br>
+<br>
+<h2>部件成果展示：</h2>
+<div class="button-container">
+    <a href="./原神banner/原神banner.html" class="btn" title="原神banner" target="_blank">
+        <span class="btm">原神banner</span>
+    </a>
+    <a href="./抖音产品卡片/抖音产品卡片.html" class="btn" title="抖音产品卡片" target="_blank">
+        <span class="btm">抖音产品卡片</span>
+    </a>
+    <a href="./抖音解决方案/抖音解决方案.html" class="btn" title="抖音解决方案" target="_blank">
+        <span class="btm">抖音解决方案</span>
+    </a>
+    <a href="./新闻列表/新闻列表.html" class="btn" title="新闻列表" target="_blank">
+        <span class="btm">新闻列表</span>
+    </a>
+</div>
+<br>
+<br>
+<br>
 <h2>完整项目展示：</h2>
-<ul>
-    <li><a href="./云边有个小卖部/云边有个小卖部.html" target="_blank">云边有个小卖部</a></li>
-    <li><a href="./五子棋/五子棋.html" target="_blank">五子棋</a></li>
-    <li><a href="./学成在线/学成在线.html" target="_blank">学成在线</a></li>
-</ul>
-</body>
-</html>
+<div class="button-container">
+    <a href="./云边有个小卖部/云边有个小卖部.html" class="btn" title="云边有个小卖部" target="_blank">
+        <span class="btm">云边有个小卖部</span>
+    </a>
+    <a href="./五子棋/五子棋.html" class="btn" title="五子棋" target="_blank">
+        <span class="btm">五子棋</span>
+    </a>
+    <a href="./学成在线/学成在线.html" class="btn" title="学成在线" target="_blank">
+        <span class="btm">学成在线</span>
+    </a>
+</div>
+<br>
+<br>
+<br>
