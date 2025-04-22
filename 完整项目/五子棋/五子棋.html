@@ -13,135 +13,136 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url("https://file.psd.cn/2022/09-08/6b8fe8f675f735e221e3171cb5b5f7da.jpg") no-repeat center center;
+            background: url(./bgi.jpg) no-repeat center center;
             background-size: cover;
         }
 
         canvas {
             border: 1px solid black;
-            background-color: rgba(255, 255, 255, 0.5); /* 半透明背景，覆盖在图片上 */
+            background-color: rgba(255, 255, 255, 0.5);
+            /* 半透明背景，覆盖在图片上 */
         }
     </style>
 </head>
 
 <body>
-<canvas id="gameCanvas" width="600" height="600"></canvas>
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-    const boardSize = 20; // 棋盘大小改为 20×20
-    const cellSize = canvas.width / (boardSize - 1); // 网格线间距
+        const boardSize = 20; // 棋盘大小改为 20×20
+        const cellSize = canvas.width / (boardSize - 1); // 网格线间距
 
-    let currentPlayer = 'white'; // 当前玩家，初始为白棋
-    const board = []; // 棋盘数组，记录棋子位置
+        let currentPlayer = 'white'; // 当前玩家，初始为白棋
+        const board = []; // 棋盘数组，记录棋子位置
 
-    // 初始化数组棋盘
-    for (let i = 0; i < boardSize; i++) {
-        board[i] = new Array(boardSize).fill(null);
-    }
-
-    // 绘制棋盘
-    function drawBoard() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 初始化数组棋盘
         for (let i = 0; i < boardSize; i++) {
+            board[i] = new Array(boardSize).fill(null);
+        }
+
+        // 绘制棋盘
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < boardSize; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * cellSize, 0);
+                ctx.lineTo(i * cellSize, canvas.height);
+                ctx.stroke();
+                ctx.moveTo(0, i * cellSize);
+                ctx.lineTo(canvas.width, i * cellSize);
+                ctx.stroke();
+            }
+        }
+
+        // 绘制棋子
+        function drawPiece(x, y, color) {
+            const radius = cellSize / 2 - 2;
             ctx.beginPath();
-            ctx.moveTo(i * cellSize, 0);
-            ctx.lineTo(i * cellSize, canvas.height);
-            ctx.stroke();
-            ctx.moveTo(0, i * cellSize);
-            ctx.lineTo(canvas.width, i * cellSize);
-            ctx.stroke();
+            ctx.arc(x * cellSize, y * cellSize, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = color;
+            ctx.fill();
         }
-    }
 
-    // 绘制棋子
-    function drawPiece(x, y, color) {
-        const radius = cellSize / 2 - 2;
-        ctx.beginPath();
-        ctx.arc(x * cellSize, y * cellSize, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = color;
-        ctx.fill();
-    }
+        // 检查胜负
+        function checkWin(x, y, player) {
+            const directions = [
+                { dx: 1, dy: 0 }, // 水平
+                { dx: 0, dy: 1 }, // 垂直
+                { dx: 1, dy: 1 }, // 主对角线
+                { dx: 1, dy: -1 } // 副对角线
+            ];
 
-    // 检查胜负
-    function checkWin(x, y, player) {
-        const directions = [
-            {dx: 1, dy: 0}, // 水平
-            {dx: 0, dy: 1}, // 垂直
-            {dx: 1, dy: 1}, // 主对角线
-            {dx: 1, dy: -1} // 副对角线
-        ];
+            for (const { dx, dy } of directions) {
+                let count = 1;
 
-        for (const {dx, dy} of directions) {
-            let count = 1;
+                // 检查正方向
+                for (let step = 1; step < 5; step++) {
+                    const nx = x + step * dx;
+                    const ny = y + step * dy;
+                    if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && board[nx][ny] === player) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
 
-            // 检查正方向
-            for (let step = 1; step < 5; step++) {
-                const nx = x + step * dx;
-                const ny = y + step * dy;
-                if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && board[nx][ny] === player) {
-                    count++;
-                } else {
-                    break;
+                // 检查反方向
+                for (let step = 1; step < 5; step++) {
+                    const nx = x - step * dx;
+                    const ny = y - step * dy;
+                    if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && board[nx][ny] === player) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+
+                // 如果连成 5 子，返回胜利
+                if (count >= 5) {
+                    return true;
                 }
             }
 
-            // 检查反方向
-            for (let step = 1; step < 5; step++) {
-                const nx = x - step * dx;
-                const ny = y - step * dy;
-                if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && board[nx][ny] === player) {
-                    count++;
-                } else {
-                    break;
+            return false;
+        }
+
+        // 处理鼠标点击事件
+        canvas.addEventListener('click', function (e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.round((e.clientX - rect.left) / cellSize);
+            const y = Math.round((e.clientY - rect.top) / cellSize);
+
+            if (board[x] && board[x][y] === null) {
+                board[x][y] = currentPlayer;
+                drawPiece(x, y, currentPlayer);
+
+                // 检查是否胜利
+                if (checkWin(x, y, currentPlayer)) {
+                    setTimeout(() => {
+                        alert(`${currentPlayer === 'white' ? '白色棋子' : '黑色棋子'}获胜！`);
+                        resetGame();
+                    }, 100);
+                    return;
                 }
-            }
 
-            // 如果连成 5 子，返回胜利
-            if (count >= 5) {
-                return true;
+                // 切换玩家
+                currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
             }
+        });
+
+        // 重置游戏
+        function resetGame() {
+            for (let i = 0; i < boardSize; i++) {
+                board[i].fill(null);
+            }
+            currentPlayer = 'white';
+            drawBoard();
         }
 
-        return false;
-    }
-
-    // 处理鼠标点击事件
-    canvas.addEventListener('click', function (e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = Math.round((e.clientX - rect.left) / cellSize);
-        const y = Math.round((e.clientY - rect.top) / cellSize);
-
-        if (board[x] && board[x][y] === null) {
-            board[x][y] = currentPlayer;
-            drawPiece(x, y, currentPlayer);
-
-            // 检查是否胜利
-            if (checkWin(x, y, currentPlayer)) {
-                setTimeout(() => {
-                    alert(`${currentPlayer === 'white' ? '白色棋子' : '黑色棋子'}获胜！`);
-                    resetGame();
-                }, 100);
-                return;
-            }
-
-            // 切换玩家
-            currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
-        }
-    });
-
-    // 重置游戏
-    function resetGame() {
-        for (let i = 0; i < boardSize; i++) {
-            board[i].fill(null);
-        }
-        currentPlayer = 'white';
         drawBoard();
-    }
-
-    drawBoard();
-</script>
+    </script>
 </body>
 
 </html>
