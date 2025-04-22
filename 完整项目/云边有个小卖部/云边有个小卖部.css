@@ -1,0 +1,49 @@
+h1 {
+    color: rgb(29, 5, 5);
+    font: normal 700 30px/1 Microsoft YaHei, sans-serif;
+    text-align: center;
+}
+
+.center {
+    text-align: center;
+}
+
+.indent {
+    text-indent: 2em;
+}
+
+.size {
+    font-size: 20px;
+}
+
+.round {
+    border-radius: 20px;
+}
+
+img, iframe {
+    width: 100%;
+    height: auto;
+}
+
+body {
+    width: 100%;
+    height: auto;
+    background-image: url(https://img.tukuppt.com/ad_preview/00/09/86/5c99222cdd0c7.jpg!/fw/980);
+    background-attachment: fixed;
+}
+
+a {
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    background-color: rgb(161, 248, 248);
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    line-height: 40px;
+    font-size: 18px;
+}
+
+a:hover {
+    background-color: rgb(54, 185, 232);
+}
