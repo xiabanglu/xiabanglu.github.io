@@ -24,6 +24,24 @@
         li {
             list-style: none;
         }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap; /* 允许换行 */
+            justify-content: center; /* 居中对齐 */
+            padding: 20px; /* 添加内边距 */
+        }
+
+        @media (max-width: 600px) {
+            .button-container {
+                padding: 10px; /* 移动端内边距调整 */
+            }
+
+            .btn {
+                width: 100%; /* 按钮宽度100% */
+                margin: 5px 0; /* 按钮之间的间距 */
+            }
+        }
     </style>
 </head>
 <body>

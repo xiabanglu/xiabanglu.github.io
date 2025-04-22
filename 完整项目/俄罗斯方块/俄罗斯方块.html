@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>俄罗斯方块</title>
     <link rel="stylesheet" href="俄罗斯方块.css">
 </head>
+
 <body>
     <div class="game-container">
         <div class="game-board">
             <canvas id="game-canvas" width="300" height="600"></canvas>
+            <div class="game-overlay" id="game-overlay">
+                <div class="overlay-content">
+                    <h2>游戏结束</h2>
+                    <button id="restart-btn">重新开始</button>
+                </div>
+            </div>
         </div>
         <div class="game-info">
             <h1>俄罗斯方块</h1>
@@ -25,6 +33,7 @@
                 <div class="main-controls">
                     <button id="start-btn">开始游戏</button>
                     <button id="pause-btn">暂停</button>
+                    <button id="restart-btn-2">重新开始</button>
                 </div>
                 <div class="game-controls">
                     <button id="left-btn">←</button>
@@ -38,67 +47,6 @@
         </div>
     </div>
     <script src="俄罗斯方块.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM 加载完成');
-            try {
-                const game = new Tetris();
-                console.log('游戏实例创建成功');
-                
-                // 绑定开始按钮事件
-                const startBtn = document.getElementById('start-btn');
-                if (startBtn) {
-                    startBtn.addEventListener('click', function() {
-                        console.log('开始按钮被点击');
-                        game.start();
-                    });
-                }
-                
-                // 绑定暂停按钮事件
-                const pauseBtn = document.getElementById('pause-btn');
-                if (pauseBtn) {
-                    pauseBtn.addEventListener('click', function() {
-                        console.log('暂停按钮被点击');
-                        game.togglePause();
-                    });
-                }
-
-                // 绑定方向控制按钮事件
-                const leftBtn = document.getElementById('left-btn');
-                const rightBtn = document.getElementById('right-btn');
-                const downBtn = document.getElementById('down-btn');
-                const rotateBtn = document.getElementById('rotate-btn');
-
-                if (leftBtn) {
-                    leftBtn.addEventListener('click', function() {
-                        game.move(-1);
-                    });
-                }
-
-                if (rightBtn) {
-                    rightBtn.addEventListener('click', function() {
-                        game.move(1);
-                    });
-                }
-
-                if (downBtn) {
-                    downBtn.addEventListener('click', function() {
-                        game.drop();
-                    });
-                }
-
-                if (rotateBtn) {
-                    rotateBtn.addEventListener('click', function() {
-                        game.rotate();
-                        if (game.collide()) {
-                            for (let i = 0; i < 3; i++) game.rotate();
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('游戏初始化失败:', error);
-            }
-        });
-    </script>
 </body>
-</html> 
+
+</html>

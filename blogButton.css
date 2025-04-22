@@ -15,7 +15,8 @@
     zoom: 1;
 }
 
-.clearfix:before, .clearfix:after {
+.clearfix:before,
+.clearfix:after {
     content: " ";
     display: block;
     height: 0;
@@ -45,7 +46,8 @@
     transition: all 0.1s ease-out;
 }
 
-.btn:hover, .btn:focus {
+.btn:hover,
+.btn:focus {
     transition: all 0.25s ease-out;
     background: #fafafa;
     color: #66cbff;

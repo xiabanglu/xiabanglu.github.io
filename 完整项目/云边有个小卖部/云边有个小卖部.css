@@ -1,49 +1,224 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                url(https://img.tukuppt.com/ad_preview/00/09/86/5c99222cdd0c7.jpg!/fw/980);
+    background-attachment: fixed;
+    background-size: cover;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
 h1 {
-    color: rgb(29, 5, 5);
-    font: normal 700 30px/1 Microsoft YaHei, sans-serif;
+    color: #2c3e50;
+    font-size: 2.5rem;
     text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    color: #34495e;
+    font-size: 1.8rem;
+    margin: 1.5rem 0;
+}
+
+h3 {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    margin: 1.2rem 0;
+}
+
+h4 {
+    color: #7f8c8d;
+    font-size: 1.2rem;
+    margin: 1rem 0;
 }
 
 .center {
     text-align: center;
+    margin: 1rem 0;
 }
 
 .indent {
     text-indent: 2em;
+    margin: 1rem 0;
+    line-height: 1.8;
 }
 
 .size {
-    font-size: 20px;
+    font-size: 1.2rem;
 }
 
 .round {
-    border-radius: 20px;
+    border-radius: 25px;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.round:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
 }
 
 img, iframe {
-    width: 100%;
+    max-width: 100%;
     height: auto;
-}
-
-body {
-    width: 100%;
-    height: auto;
-    background-image: url(https://img.tukuppt.com/ad_preview/00/09/86/5c99222cdd0c7.jpg!/fw/980);
-    background-attachment: fixed;
+    border-radius: 10px;
+    margin: 1rem 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 a {
     display: inline-block;
-    width: 100px;
-    height: 40px;
-    background-color: rgb(161, 248, 248);
-    color: black;
+    padding: 10px 20px;
+    background-color: #1abc9c;
+    color: white;
     text-decoration: none;
     text-align: center;
-    line-height: 40px;
-    font-size: 18px;
+    border-radius: 25px;
+    margin: 0.5rem;
+    transition: all 0.3s;
 }
 
 a:hover {
-    background-color: rgb(54, 185, 232);
+    background-color: #16a085;
+    transform: translateY(-2px);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin: 0.5rem;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+form {
+    margin: 1.5rem 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ul, ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+li {
+    margin: 0.5rem 0;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea {
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+
+    a {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    table th, table td {
+        padding: 8px;
+    }
 }
