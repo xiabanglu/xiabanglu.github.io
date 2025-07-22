@@ -1,0 +1,212 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+h1 {
+    font-size: 3.2rem;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #ff00cc, #3333ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: #a0a0ff;
+    margin-bottom: 15px;
+}
+
+.quote {
+    font-style: italic;
+    color: #66ccff;
+    font-size: 1.2rem;
+}
+
+.content {
+    display: flex;
+    width: 100%;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.canvas-container {
+    flex: 1;
+    min-width: 400px;
+    max-width: 600px;
+    position: relative;
+    background: rgba(0, 0, 20, 0.6);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(100, 100, 255, 0.2);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 500px;
+}
+
+.formula-container {
+    flex: 1;
+    min-width: 400px;
+    max-width: 500px;
+    background: rgba(0, 0, 30, 0.7);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(100, 100, 255, 0.2);
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #66ffcc;
+    position: relative;
+    overflow: hidden;
+}
+
+.formula-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ff66cc;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 102, 204, 0.5);
+}
+
+.formula {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: rgba(0, 20, 40, 0.5);
+    border-radius: 8px;
+    border-left: 3px solid #3399ff;
+}
+
+.formula:last-child {
+    margin-bottom: 0;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 30, 0.6);
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 150px;
+}
+
+label {
+    margin-bottom: 8px;
+    color: #66ccff;
+    font-size: 0.9rem;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, #3300ff, #ff00cc);
+    border-radius: 4px;
+    outline: none;
+}
+
+.description {
+    max-width: 800px;
+    padding: 25px;
+    background: rgba(0, 10, 30, 0.6);
+    border-radius: 15px;
+    margin-top: 20px;
+    line-height: 1.7;
+    text-align: center;
+    font-size: 1.1rem;
+    border: 1px solid rgba(100, 100, 255, 0.2);
+}
+
+.highlight {
+    color: #66ffcc;
+    font-weight: bold;
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.7;
+    }
+}
+
+footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #a0a0ff;
+    font-size: 0.9rem;
+    padding: 20px;
+}
+
+@media (max-width: 900px) {
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .canvas-container,
+    .formula-container {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子水母</title>
+    <link rel="stylesheet" href="jellyfish.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>赛博空间中的数字生命</h1>
+            <div class="subtitle">数学公式生成的电子水母</div>
+            <div class="quote">"原来数字的世界这么美"</div>
+        </header>
+
+        <div class="content">
+            <div class="canvas-container">
+                <canvas id="jellyfishCanvas"></canvas>
+            </div>
+
+            <div class="formula-container">
+                <div class="formula-title">电子水母生成公式</div>
+                <div class="formula">
+                    k = 5 cos(x/14) cos(y/30)
+                </div>
+                <div class="formula">
+                    e = y/8 - 13
+                </div>
+                <div class="formula">
+                    d = (k² + e²)/59 + 4
+                </div>
+                <div class="formula">
+                    a = arctan(k, e)
+                </div>
+                <div class="formula">
+                    q = 60 - sin(a·e) + k·(3 + (4/d)·sin(d² - 2t))
+                </div>
+                <div class="formula">
+                    c = d/2 + e/99 - t/18
+                </div>
+                <div class="formula">
+                    X = q · sin(c) + 200
+                </div>
+                <div class="formula">
+                    Y = (q + 9d) · cos(c) + 200
+                </div>
+                <div class="formula" style="color: #ffcc66; margin-top: 25px;">
+                    // t = 时间变量，实现动画效果
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="speed">游动速度</label>
+                <input type="range" id="speed" min="0.01" max="0.1" step="0.01" value="0.05">
+            </div>
+            <div class="control-group">
+                <label for="density">水母密度</label>
+                <input type="range" id="density" min="2" max="6" step="0.5" value="3">
+            </div>
+            <div class="control-group">
+                <label for="size">粒子大小</label>
+                <input type="range" id="size" min="1" max="5" step="0.5" value="2">
+            </div>
+            <div class="control-group">
+                <label for="hue">色调变化</label>
+                <input type="range" id="hue" min="0" max="360" step="1" value="220">
+            </div>
+        </div>
+
+        <div class="description">
+            <p>这个<span class="highlight">电子水母</span>完全由数学公式生成，没有任何预定义的图形或图像。</p>
+            <p>通过参数方程将平面上的点<span class="highlight">(x, y)</span>映射到屏幕坐标<span class="highlight">(X, Y)</span>，并随时间<span
+                    class="highlight pulse">t</span>变化产生动画效果。</p>
+            <p>调整控制面板中的参数可以改变水母的行为和外观，体验数学如何创造生命般的动态美感。</p>
+        </div>
+
+        <footer>
+            数学艺术 | 数字生命 | 公式驱动动画 | 赛博美学
+        </footer>
+    </div>
+
+    <script src="jellyfish.js"></script>
+</body>
+
+</html>

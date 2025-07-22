@@ -1,0 +1,126 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url(./bgi.jpg) no-repeat center center;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+}
+
+.game-container {
+    position: relative;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.game-info {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.current-player {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.current-player::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #333;
+}
+
+.current-player.black::before {
+    background-color: #000;
+}
+
+.reset-btn {
+    padding: 8px 20px;
+    background-color: rgba(76, 175, 80, 0.9);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.reset-btn:hover {
+    background-color: rgba(69, 160, 73, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reset-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+canvas {
+    display: block;
+    border: 2px solid #8B4513;
+    background-color: #DEB887;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 600px) {
+    .game-container {
+        padding: 10px;
+        width: 100%;
+        max-width: 100vw;
+        height: 100vh;
+        justify-content: center;
+    }
+
+    .game-header {
+        position: fixed;
+        top: 10px;
+        left: 0;
+        right: 0;
+        padding: 0 10px;
+        z-index: 1;
+    }
+
+    canvas {
+        width: 100%;
+        height: auto;
+        max-width: 100vw;
+        max-height: 100vh;
+    }
+}
