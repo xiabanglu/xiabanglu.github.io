@@ -33,7 +33,7 @@
         <!-- 统计和清空 -->
         <footer v-show="list.length" class="footer">
             <!-- 统计 -->
-            <span class="todo-count">合 计:<strong> {{sum}} </strong></span>
+            <span class="todo-count">合 计:<strong> {{ list.length }} </strong></span>
             <!-- 清空 -->
             <button @click="clear" class="clear-completed">
                 清空任务
@@ -74,11 +74,6 @@
                     this.list = []
                 }
             },
-            computed:{
-                sum(){
-                    return this.list.length
-                }
-            }
         })
 
     </script>
