@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自定义转盘程序</title>
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#f97316',
+            accent: '#8b5cf6',
+            neutral: '#f3f4f6',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444',
+            info: '#3b82f6'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'spin-slow': 'spin 3s linear infinite',
+            'bounce-slow': 'bounce 2s infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+      }
+      .bg-gradient-radial {
+        background-image: radial-gradient(circle, var(--tw-gradient-stops));
+      }
+      .clip-path-polygon {
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%);
+      }
+    }
+    
+    /* 自定义转盘样式 */
+    .wheel-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 1/1;
+      margin: 0 auto;
+    }
+    
+    .wheel-pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      z-index: 10;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    
+    .wheel-pointer svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .wheel-canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .spin-button {
+      transition: all 0.3s ease;
+    }
+    
+    .spin-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .spin-button:active {
+      transform: translateY(0);
+    }
+    
+    .section-item {
+      transition: all 0.2s ease;
+    }
+    
+    .section-item:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+    
+    .add-section-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .add-section-btn:hover {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+    
+    .remove-section-btn {
+      transition: all 0.2s ease;
+    }
+    
+    .remove-section-btn:hover {
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+    
+    /* 转盘旋转动画 */
+    @keyframes wheelSpin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .wheel-spinning {
+      animation: wheelSpin 5s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+    }
+    
+    /* 结果提示动画 */
+    @keyframes resultPopup {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .result-popup {
+      animation: resultPopup 0.5s ease-out forwards;
+    }
+    
+    /* 作者信息样式 */
+    .author-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #666;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 5;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <!-- 标题和作者信息 -->
+    <div class="relative mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-2">自定义转盘程序</h1>
+      <p class="text-center text-gray-600 mb-4">创建你自己的幸运转盘，体验随机抽取的乐趣</p>
+      <div class="author-info">
+        <span class="font-medium">作者：</span>夏帮路
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- 左侧：自定义表单区 -->
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <i class="fa fa-pencil-square-o mr-2 text-primary"></i>
+          转盘内容设置
+        </h2>
+        
+        <div class="mb-6">
+          <label for="wheel-title" class="block text-sm font-medium text-gray-700 mb-1">转盘标题</label>
+          <input type="text" id="wheel-title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="输入转盘标题（可选）">
+        </div>
+        
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <label class="block text-sm font-medium text-gray-700">转盘分区</label>
+            <button id="add-section" class="add-section-btn px-3 py-1 bg-success bg-opacity-10 text-success text-sm rounded-md flex items-center">
+              <i class="fa fa-plus mr-1"></i> 添加分区
+            </button>
+          </div>
+          
+          <div id="sections-container" class="space-y-3">
+            <!-- 初始分区 -->
+            <div class="section-item p-3 border border-gray-200 rounded-md flex flex-wrap items-center gap-3">
+              <div class="flex-1">
+                <label class="block text-xs text-gray-500 mb-1">分区名称</label>
+                <input type="text" class="section-name w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" placeholder="输入分区名称" value="奖品1">
+              </div>
+              <div class="w-24">
+                <label class="block text-xs text-gray-500 mb-1">权重</label>
+                <input type="number" class="section-weight w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" min="1" value="1">
+              </div>
+              <div class="w-24">
+                <label class="block text-xs text-gray-500 mb-1">颜色</label>
+                <input type="color" class="section-color w-full h-8 rounded-md cursor-pointer" value="#3b82f6">
+              </div>
+              <div class="remove-section-btn mt-4 px-2 py-1 bg-danger bg-opacity-10 text-danger rounded-md cursor-pointer">
+                <i class="fa fa-trash"></i>
+              </div>
+            </div>
+            
+            <div class="section-item p-3 border border-gray-200 rounded-md flex flex-wrap items-center gap-3">
+              <div class="flex-1">
+                <label class="block text-xs text-gray-500 mb-1">分区名称</label>
+                <input type="text" class="section-name w-full px-2 py-1 border border-gray-300 rounded rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" placeholder="输入分区名称" value="奖品2">
+              </div>
+              <div class="w-24">
+                <label class="block text-xs text-gray-500 mb-1">权重</label>
+                <input type="number" class="section-weight w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" min="1" value="1">
+              </div>
+              <div class="w-24">
+                <label class="block text-xs text-gray-500 mb-1">颜色</label>
+                <input type="color" class="section-color w-full h-8 rounded-md cursor-pointer" value="#f97316">
+              </div>
+              <div class="remove-section-btn mt-4 px-2 py-1 bg-danger bg-opacity-10 text-danger rounded-md cursor-pointer">
+                <i class="fa fa-trash"></i>
+              </div>
+            </div>
+            
+            <div class="section-item p-3 border border-gray-200 rounded-md flex flex-wrap items-center gap-3">
+              <div class="flex-1">
+                <label class="block text-xs text-gray-500 mb-1">分区名称</label>
+                <input type="text" class="section-name w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" placeholder="输入分区名称" value="奖品3">
+              </div>
+              <div class="w-24">
+                <label class="block text-xs text-gray-500 mb-1">权重</label>
+                <input type="number" class="section-weight w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" min="1" value="1">
+              </div>
+              <div class="w-24">
+                <label class="block text-xs text-gray-500 mb-1">颜色</label>
+                <input type="color" class="section-color w-full h-8 rounded-md cursor-pointer" value="#8b5cf6">
+              </div>
+              <div class="remove-section-btn mt-4 px-2 py-1 bg-danger bg-opacity-10 text-danger rounded-md cursor-pointer">
+                <i class="fa fa-trash"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <h3 class="text-sm font-medium text-gray-700 mb-2">转盘设置</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="spin-speed" class="block text-xs text-gray-500 mb-1">旋转速度</label>
+              <input type="range" id="spin-speed" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>慢</span>
+                <span>快</span>
+              </div>
+            </div>
+            <div>
+              <label for="spin-duration" class="block text-xs text-gray-500 mb-1">旋转时长 (秒)</label>
+              <input type="range" id="spin-duration" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>短</span>
+                <span>长</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-end">
+          <button id="reset-form" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2 hover:bg-gray-300 transition-colors">
+            重置
+          </button>
+          <button id="apply-settings" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 transition-colors">
+            应用设置
+          </button>
+        </div>
+      </div>
+      
+      <!-- 右侧：转盘预览和操作区 -->
+      <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <i class="fa fa-trophy mr-2 text-secondary"></i>
+          转盘预览
+        </h2>
+        
+        <div class="wheel-container mb-6">
+          <!-- 转盘指针 -->
+          <div class="wheel-pointer">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="50,0 100,50 0,50" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
+            </svg>
+          </div>
+          
+          <!-- 转盘画布 -->
+          <canvas id="wheel-canvas" class="wheel-canvas"></canvas>
+        </div>
+        
+        <!-- 转盘标题 -->
+        <h3 id="display-title" class="text-lg font-medium text-gray-800 mb-6 text-center">我的幸运转盘</h3>
+        
+        <!-- 操作按钮 -->
+        <div class="flex flex-col items-center">
+          <button id="spin-wheel" class="spin-button px-8 py-3 bg-secondary text-white rounded-full text-lg font-medium shadow-lg hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-300 mb-4">
+            <i class="fa fa-play-circle mr-2"></i> 开始旋转
+          </button>
+          
+          <div id="result-display" class="hidden result-popup bg-white p-4 rounded-lg shadow-lg text-center max-w-xs">
+            <p class="text-lg font-semibold text-gray-800">恭喜！</p>
+            <p id="result-text" class="text-xl font-bold text-primary mt-2">你获得了：奖品1</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 底部说明 -->
+    <div class="mt-8 text-center text-gray-600 text-sm">
+      <p>© 2025 自定义转盘程序 | 作者：夏帮路</p>
+    </div>
+  </div>
+
+  <script>
+    // 全局变量
+    let wheelChart = null;
+    let isSpinning = false;
+    let currentRotation = 0;
+    let wheelData = [];
+    let wheelColors = [];
+    
+    // DOM 元素
+    let wheelCanvas, sectionsContainer, addSectionBtn, resetFormBtn, applySettingsBtn, spinWheelBtn, resultDisplay, resultText, wheelTitleInput, displayTitle, spinSpeedInput, spinDurationInput;
+    
+    // 初始化转盘
+    function initWheel() {
+      console.log('初始化转盘');
+      try {
+        // 获取画布上下文
+        const ctx = wheelCanvas.getContext('2d');
+        
+        // 创建 Chart.js 实例
+        wheelChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: [],
+            datasets: [{
+              data: [],
+              backgroundColor: [],
+              borderColor: '#ffffff',
+              borderWidth: 2,
+              hoverOffset: 10
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '0%',
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                enabled: false
+              }
+            },
+            rotation: -90,
+            circumference: 360
+          }
+        });
+        
+        console.log('转盘初始化成功');
+        // 初始化转盘数据
+        updateWheelData();
+      } catch (error) {
+        console.error('初始化转盘失败:', error);
+      }
+    }
+    
+    // 更新转盘数据
+    function updateWheelData() {
+      console.log('更新转盘数据');
+      try {
+        // 清空现有数据
+        wheelData = [];
+        wheelColors = [];
+        
+        // 获取所有分区
+        const sections = document.querySelectorAll('.section-item');
+        
+        // 收集分区数据
+        sections.forEach(section => {
+          const nameInput = section.querySelector('.section-name');
+          const weightInput = section.querySelector('.section-weight');
+          const colorInput = section.querySelector('.section-color');
+          
+          const name = nameInput.value.trim() || `分区${wheelData.length + 1}`;
+          const weight = parseInt(weightInput.value) || 1;
+          const color = colorInput.value;
+          
+          wheelData.push({
+            name,
+            weight
+          });
+          
+          wheelColors.push(color);
+        });
+        
+        console.log('收集到的转盘数据:', wheelData);
+        
+        // 更新转盘标题
+        displayTitle.textContent = wheelTitleInput.value.trim() || '我的幸运转盘';
+        
+        // 更新图表数据
+        if (wheelChart) {
+          wheelChart.data.labels = wheelData.map(item => item.name);
+          wheelChart.data.datasets[0].data = wheelData.map(item => item.weight);
+          wheelChart.data.datasets[0].backgroundColor = wheelColors;
+          wheelChart.update();
+          console.log('转盘数据更新成功');
+        } else {
+          console.error('wheelChart 未初始化');
+        }
+      } catch (error) {
+        console.error('更新转盘数据失败:', error);
+      }
+    }
+    
+    // 添加新分区
+    function addNewSection() {
+      console.log('添加新分区');
+      try {
+        const sectionCount = document.querySelectorAll('.section-item').length;
+        
+        // 创建新分区元素
+        const newSection = document.createElement('div');
+        newSection.className = 'section-item p-3 border border-gray-200 rounded-md flex flex-wrap items-center gap-3';
+        
+        // 生成随机颜色
+        const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+        
+        newSection.innerHTML = `
+          <div class="flex-1">
+            <label class="block text-xs text-gray-500 mb-1">分区名称</label>
+            <input type="text" class="section-name w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" placeholder="输入分区名称" value="奖品${sectionCount + 1}">
+          </div>
+          <div class="w-24">
+            <label class="block text-xs text-gray-500 mb-1">权重</label>
+            <input type="number" class="section-weight w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" min="1" value="1">
+          </div>
+          <div class="w-24">
+            <label class="block text-xs text-gray-500 mb-1">颜色</label>
+            <input type="color" class="section-color w-full h-8 rounded-md cursor-pointer" value="${randomColor}">
+          </div>
+          <div class="remove-section-btn mt-4 px-2 py-1 bg-danger bg-opacity-10 text-danger rounded-md cursor-pointer">
+            <i class="fa fa-trash"></i>
+          </div>
+        `;
+        
+        // 添加删除事件监听
+        const removeBtn = newSection.querySelector('.remove-section-btn');
+        removeBtn.addEventListener('click', function() {
+          if (document.querySelectorAll('.section-item').length > 2) {
+            newSection.remove();
+            updateWheelData();
+          } else {
+            alert('至少需要保留2个分区');
+          }
+        });
+        
+        // 添加到容器
+        sectionsContainer.appendChild(newSection);
+        
+        // 更新转盘数据
+        updateWheelData();
+        console.log('新分区添加成功');
+      } catch (error) {
+        console.error('添加新分区失败:', error);
+      }
+    }
+    
+    // 重置表单
+    function resetForm() {
+      console.log('重置表单');
+      try {
+        if (confirm('确定要重置表单吗？所有设置将恢复默认值。')) {
+          // 重置标题
+          wheelTitleInput.value = '';
+          
+          // 重置转盘设置
+          spinSpeedInput.value = 5;
+          spinDurationInput.value = 5;
+          
+          // 保留前3个分区，删除其余
+          const sections = document.querySelectorAll('.section-item');
+          sections.forEach((section, index) => {
+            if (index >= 3) {
+              section.remove();
+            }
+          });
+          
+          // 重置前3个分区的值
+          const firstThreeSections = document.querySelectorAll('.section-item');
+          firstThreeSections[0].querySelector('.section-name').value = '奖品1';
+          firstThreeSections[0].querySelector('.section-weight').value = '1';
+          firstThreeSections[0].querySelector('.section-color').value = '#3b82f6';
+          
+          firstThreeSections[1].querySelector('.section-name').value = '奖品2';
+          firstThreeSections[1].querySelector('.section-weight').value = '1';
+          firstThreeSections[1].querySelector('.section-color').value = '#f97316';
+          
+          firstThreeSections[2].querySelector('.section-name').value = '奖品3';
+          firstThreeSections[2].querySelector('.section-weight').value = '1';
+          firstThreeSections[2].querySelector('.section-color').value = '#8b5cf6';
+          
+          // 更新转盘数据
+          updateWheelData();
+          
+          // 隐藏结果
+          resultDisplay.classList.add('hidden');
+          
+          console.log('表单重置成功');
+        }
+      } catch (error) {
+        console.error('重置表单失败:', error);
+      }
+    }
+    
+    // 旋转转盘
+    function spinWheel() {
+      console.log('旋转转盘');
+      try {
+        if (isSpinning) {
+          console.log('转盘正在旋转中');
+          return;
+        }
+        if (wheelData.length < 2) {
+          alert('至少需要2个分区才能旋转转盘');
+          return;
+        }
+        
+        isSpinning = true;
+        spinWheelBtn.disabled = true;
+        spinWheelBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 旋转中...';
+        resultDisplay.classList.add('hidden');
+        
+        // 获取旋转速度和时长
+        const speed = parseInt(spinSpeedInput.value);
+        const duration = parseInt(spinDurationInput.value);
+        
+        console.log(`旋转参数: 速度=${speed}, 时长=${duration}`);
+        
+        // 计算总权重
+        const totalWeight = wheelData.reduce((sum, item) => sum + item.weight, 0);
+        console.log(`总权重: ${totalWeight}`);
+        
+        // 生成随机数
+        let random = Math.random() * totalWeight;
+        console.log(`随机数: ${random}`);
+        
+        // 确定中奖分区
+        let winningIndex = 0;
+        let cumulativeWeight = 0;
+        
+        for (let i = 0; i < wheelData.length; i++) {
+          cumulativeWeight += wheelData[i].weight;
+          if (random <= cumulativeWeight) {
+            winningIndex = i;
+            break;
+          }
+        }
+        
+        console.log(`中奖分区索引: ${winningIndex}, 中奖分区名称: ${wheelData[winningIndex].name}`);
+        
+        // 计算每个分区的角度
+        const anglePerWeight = 360 / totalWeight;
+        
+        // 计算中奖分区的角度范围
+        let startAngle = 0;
+        for (let i = 0; i < winningIndex; i++) {
+          startAngle += wheelData[i].weight * anglePerWeight;
+        }
+        
+        // 中奖分区的中心角度
+        const targetAngle = startAngle + (wheelData[winningIndex].weight * anglePerWeight) / 2;
+        
+        // 计算需要旋转的角度（多转几圈增加视觉效果）
+        const spinAngle = 360 * (speed + 5) + (360 - targetAngle);
+        
+        console.log(`旋转角度: ${spinAngle}度`);
+        
+        // 应用旋转动画
+        const wheelElement = wheelCanvas;
+        wheelElement.style.transition = `transform ${duration}s cubic-bezier(0.5, 0, 0.5, 1)`;
+        wheelElement.style.transform = `rotate(${spinAngle}deg)`;
+        
+        // 动画结束后显示结果
+        setTimeout(() => {
+          isSpinning = false;
+          spinWheelBtn.disabled = false;
+          spinWheelBtn.innerHTML = '<i class="fa fa-play-circle mr-2"></i> 开始旋转';
+          
+          // 显示结果
+          resultText.textContent = `你获得了：${wheelData[winningIndex].name}`;
+          resultDisplay.classList.remove('hidden');
+          
+          // 保存当前旋转角度
+          currentRotation = spinAngle % 360;
+          
+          console.log('转盘旋转完成');
+        }, duration * 1000);
+      } catch (error) {
+        console.error('旋转转盘失败:', error);
+        isSpinning = false;
+        spinWheelBtn.disabled = false;
+        spinWheelBtn.innerHTML = '<i class="fa fa-play-circle mr-2"></i> 开始旋转';
+      }
+    }
+    
+    // 事件监听
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM加载完成，初始化事件监听');
+      try {
+        // 初始化转盘
+        initWheel();
+        
+        // 添加分区按钮
+        if (addSectionBtn) {
+          addSectionBtn.addEventListener('click', addNewSection);
+          console.log('添加分区按钮事件绑定成功');
+        } else {
+          console.error('未找到addSectionBtn元素');
+        }
+        
+        // 重置表单按钮
+        if (resetFormBtn) {
+          resetFormBtn.addEventListener('click', resetForm);
+          console.log('重置表单按钮事件绑定成功');
+        } else {
+          console.error('未找到resetFormBtn元素');
+        }
+        
+        // 应用设置按钮
+        if (applySettingsBtn) {
+          applySettingsBtn.addEventListener('click', updateWheelData);
+          console.log('应用设置按钮事件绑定成功');
+        } else {
+          console.error('未找到applySettingsBtn元素');
+        }
+        
+        // 旋转转盘按钮
+        if (spinWheelBtn) {
+          spinWheelBtn.addEventListener('click', spinWheel);
+          console.log('旋转转盘按钮事件绑定成功');
+        } else {
+          console.error('未找到spinWheelBtn元素');
+        }
+        
+        // 为初始分区添加删除事件监听
+        const removeButtons = document.querySelectorAll('.remove-section-btn');
+        if (removeButtons.length > 0) {
+          removeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+              if (document.querySelectorAll('.section-item').length > 2) {
+                this.closest('.section-item').remove();
+                updateWheelData();
+              } else {
+                alert('至少需要保留2个分区');
+              }
+            });
+          });
+          console.log('删除分区按钮事件绑定成功');
+        } else {
+          console.error('未找到removeButtons元素');
+        }
+        
+        // 监听窗口大小变化，更新转盘大小
+        window.addEventListener('resize', function() {
+          if (wheelChart) {
+            wheelChart.resize();
+          }
+        });
+        
+        console.log('所有事件监听初始化完成');
+      } catch (error) {
+        console.error('初始化事件监听失败:', error);
+      }
+    });
+  </script>
+</body>
+</html>
