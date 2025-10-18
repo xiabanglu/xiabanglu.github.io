@@ -1,0 +1,91 @@
+/* 自定义样式 */
+
+/* 转盘样式 */
+#wheelCanvas {
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 转盘标题文本阴影 */
+.text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 转盘选项样式 */
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.option-color {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.option-color:hover {
+    transform: scale(1.1);
+}
+
+.option-input {
+    flex: 1;
+}
+
+.option-remove {
+    color: #ef4444;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.option-remove:hover {
+    color: #dc2626;
+}
+
+/* 转盘动画 */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 转盘旋转类 */
+.spinning {
+    animation: spin linear infinite;
+}
+
+/* 结果显示动画 */
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+#resultDisplay {
+    animation: popIn 0.5s ease-out;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+    
+    .option-item {
+        flex-wrap: wrap;
+    }
+    
+    .option-input {
+        width: 100%;
+    }
+}
