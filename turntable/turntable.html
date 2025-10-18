@@ -226,7 +226,7 @@
             <div class="section-item p-3 border border-gray-200 rounded-md flex flex-wrap items-center gap-3">
               <div class="flex-1">
                 <label class="block text-xs text-gray-500 mb-1">分区名称</label>
-                <input type="text" class="section-name w-full px-2 py-1 border border-gray-300 rounded rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" placeholder="输入分区名称" value="奖品2">
+                <input type="text" class="section-name w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" placeholder="输入分区名称" value="奖品2">
               </div>
               <div class="w-24">
                 <label class="block text-xs text-gray-500 mb-1">权重</label>
@@ -635,6 +635,22 @@
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOM加载完成，初始化事件监听');
       try {
+        // 初始化DOM元素
+        wheelCanvas = document.getElementById('wheel-canvas');
+        sectionsContainer = document.getElementById('sections-container');
+        addSectionBtn = document.getElementById('add-section');
+        resetFormBtn = document.getElementById('reset-form');
+        applySettingsBtn = document.getElementById('apply-settings');
+        spinWheelBtn = document.getElementById('spin-wheel');
+        resultDisplay = document.getElementById('result-display');
+        resultText = document.getElementById('result-text');
+        wheelTitleInput = document.getElementById('wheel-title');
+        displayTitle = document.getElementById('display-title');
+        spinSpeedInput = document.getElementById('spin-speed');
+        spinDurationInput = document.getElementById('spin-duration');
+        
+        console.log('DOM元素初始化完成');
+        
         // 初始化转盘
         initWheel();
         
